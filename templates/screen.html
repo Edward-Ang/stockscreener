@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie-edge">
+    <title>FInvesté</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon/favicon.ico">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css')}}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='script/header.js')}}" defer></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='script/screensort.js')}}" defer></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='script/screen.js')}}" defer></script>
+</head>
+<body>
+    <header>
+        <div class="headerbar">
+            <div class="headerLogo">
+                <img src="{{ url_for('static', filename='favicon/favicon.ico')}}" alt="logo">
+                <a href="{{ url_for('home')}}">FInvesté</a>
+            </div>
+            <div class="searchbar" onclick="disableClick(event)">
+                <input type="text" autocomplete="off" id="filterScreenInput" placeholder="Search">
+            </div>
+            <div class="headerIcon">
+                <a id="watchlistButton" href="{{ url_for('watchlist')}}">Watchlist</a>
+                <button id="accountButton">Login</button>
+            </div>
+        </div>
+    </header>
+    <div class="utility" id="screenUtility">
+        <div class="utilityHeading">
+            <h3 id="watchlistName">Stock screener</h3>
+        </div>
+    </div>
+    <div class="body">
+    <div class="spinnerBg" id="spinnerBg">
+        <div id="spinner" class="spinner">
+        </div>
+    </div>
+    <div class="confirmOverlay" id="logoutOverlay">
+        <div class="confirmPopup">
+            <div class="confirmWrapper">
+                <div class="confirmHeader">
+                    <h5>Confirm to logout?</h5>
+                </div>
+                <div class="confirmBody">
+                    <div class="confirmButtons">
+                        <button type="button" class="cancelButton" id="logoutCancelBtn">Cancel</button>
+                        <input type="submit" class="confirmButton" value="Confirm" id="logoutConfirmBtn">
+                    </div>    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tableview" id="screenTableView">
+        <table id="myTable">
+            <thead>
+               <tr class="theader">
+                    <th onclick="sortTable(0)">#</th>
+                    <th class="Ticker" onclick="sortTable(1)">
+                        <div class="ndcol" >
+                            <div class="tickerword">
+                                Stock
+                            </div>
+                        </div>
+                    </th>
+                    <th onclick="sortTable(2)">Open</th>
+                    <th onclick="sortTable(3)">High</th>
+                    <th onclick="sortTable(4)">Low</th>
+                    <th onclick="sortTable(5)">Close</th>
+                    <th onclick="sortTable(6)">MA</th>
+                    <th onclick="sortTable(7)">EMA</th>
+                    <th onclick="sortTable(8)">RSI</th>
+                    <th onclick="sortTable(9)">Rating</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                    <!-- Table rows will be dynamically generated here -->
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

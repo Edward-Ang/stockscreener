@@ -1,0 +1,112 @@
+
+@media screen and (min-width: 370px) and (max-width: 414px){
+  html{
+    width: 100%;
+  }
+
+  body{
+    height: 98.8vh;
+    width: 100%;
+  }
+
+  header{
+    background-color: var(--card_black);
+    margin: 8px 8px 10px 8px;
+    border-radius: 8px;
+    height: 68px;
+    width: 98.85%;
+    padding-top: 14px;
+    justify-content: center;
+    border: 2px solid var(--blue);
+  }
+  
+  
+  .headerbar{
+    height: 36px;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    border: 2px solid var(--border_gray);
+  }
+
+  .headerLogo{
+  display: flex;
+  padding-left: 0px;
+}
+
+.headerLogo img{
+  margin-right: 0px;
+}
+
+.headerbar a{
+  font-size: 24px;
+  text-decoration: none;
+  color: var(--white);
+}
+
+.headerIcon{
+  display: flex;
+  padding-right: 0%;
+  justify-content: space-between;
+}
+
+#accountButton{
+  height: auto;
+  padding: 2px 12px 3px 12px;
+  border-radius: 10px;
+  border-color: var(--blue);
+  background-color: transparent;
+  color: var(--white);
+  box-shadow: none;
+  border-style: solid;
+  border-width: 1px;
+  display: inline-block;
+}
+
+#watchlistButton{
+  height: auto;
+  color: var(--white);
+  font-size: 16px;
+  padding-top: 5px;
+  padding-bottom: 3px;
+  padding-left: 8px;
+  padding-right: 8px;
+  margin-right: 0%;
+  transition: all 85ms ease-out;
+}
+
+
+}
+
+/* Opera */
+@media screen and (min-width: 1409px){
+  .favBody{
+    height: 38.9vh; 
+  }
+
+  .tableview {
+    height: 74.8vh;
+  }
+}
+
+/* Edge */
+@media screen and (min-width: 1415px){
+  .favBody{
+    height: 43.1vh; 
+  }
+
+  .tableview {
+    height: 76.8vh;
+  }
+}
+
+/* Brave & Chrome */
+@media screen and (min-width: 1422px){
+  .favBody{
+    height: 41.5vh; 
+  }
+
+  .tableview {
+    height: 76vh;
+  }
+}

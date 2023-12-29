@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie-edge">
+    <title>My Watchlist</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon/favicon.ico">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/watchlist.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/media.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/rename.css')}}">
+    <script type="text/javascript" src="{{ url_for('static', filename='script/watchlist.js')}}" defer></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='script/watchsort.js')}}" defer></script>
+</head>
+<body>
+    <header>
+        <div class="headerbar">
+            <div class="headerLogo">
+                <img src="{{ url_for('static', filename='favicon/favicon.ico')}}" alt="logo">
+                <a href="{{ url_for('home')}}">FInvesté</a>
+            </div>
+            <div class="searchbar" onclick="disableClick(event)">
+                <input type="text" autocomplete="off" id="filterInput" placeholder="Search">
+            </div>
+            <div class="headerIcon">
+                <a id="watchlistButton" href="{{ url_for('watchlist')}}">Watchlist</a>
+                <button id="accountButton">Login</button>
+            </div>
+        </div>
+    </header>
+    <div class="spinnerBg" id="spinnerBg">
+        <div id="spinner" class="spinner"></div>
+    </div>
+    <div class="renameOverlay" id="renameOverlay">
+        <div class="renamePopup">
+            <div class="renameHeader">
+                <h5>Rename watchlist</h5>
+                <button id="renameCloseButton"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="renameBody">
+                <form id="renameForm">
+                    <div class="renameWrapper">
+                        <div class="renamePrompt">
+                            <h6>Enter the new screen name:</h6>
+                            <input type="text" autocomplete="off" id="renameInput" name="collection_name" required>
+                            <h6 id="renameMsg"><span id="saveIcon"></span>&nbsp;<span id="saveAlert"></span></h6>
+                        </div> 
+                         <div class="renameButtons">
+                            <button type="button" class="cancelButton" id="cancelButton">Cancel</button>
+                            <input type="submit" class="confirmButton" value="Save" id="saveButton2">
+                        </div>    
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="confirmOverlay" id="deleteOverlay">
+        <div class="confirmPopup">
+            <div class="confirmWrapper">
+                <div class="confirmHeader">
+                    <h5>Confirm to delete?</h5>
+                </div>
+                <div class="confirmBody">
+                    <div class="confirmButtons">
+                        <button type="button" class="cancelButton" id="deleteCancelButton">Cancel</button>
+                        <input type="submit" class="confirmButton" value="Confirm" id="confirmButton">
+                    </div>    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="confirmOverlay" id="logoutOverlay">
+        <div class="confirmPopup">
+            <div class="confirmWrapper">
+                <div class="confirmHeader">
+                    <h5>Confirm to logout?</h5>
+                </div>
+                <div class="confirmBody">
+                    <div class="confirmButtons">
+                        <button type="button" class="cancelButton" id="logoutCancelBtn">Cancel</button>
+                        <input type="submit" class="confirmButton" value="Confirm" id="logoutConfirmBtn">
+                    </div>    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="utility">
+        <h3 id="watchlistName">My watchlist</h3>
+    </div>
+    <div class="tableview">
+        <table id="wltable">
+            <thead id="wlhead">
+                <tr>
+                    <th id="noColumn" onclick="sortTable(0)">#</th>
+                    <th id="watchlistColumn" onclick="sortTable(1)">Watchlist</th>
+                    <th id="datecColumn">Date Created</th>
+                    <th id="timecColumn">Time Created</th>
+                    <th id="dltColumn"></th>
+                </tr>
+            </thead>
+            <tbody id="wlbody">
+                 <!-- Table rows will be dynamically generated here -->
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

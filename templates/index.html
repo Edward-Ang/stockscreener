@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie-edge">
+    <title>FInvesté</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon/favicon.ico">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/nouislider@14.6.3/distribute/nouislider.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/media.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/save.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/filter.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css')}}">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://kit.fontawesome.com/d7d8d20a77.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nouislider@14.6.3/distribute/nouislider.min.js"></script>
+
+    <script type="text/javascript" src="{{ url_for('static', filename='script/table.js')}}" defer></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='script/header.js')}}" defer></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='script/sort.js')}}" defer></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='script/save.js')}}" defer></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='script/download.js')}}" defer></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='script/filter.js')}}" defer></script>
+</head>
+<body>
+    <header>
+        <div class="headerbar">
+            <div class="headerLogo">
+                <img src="{{url_for('static', filename='favicon/favicon.ico')}}" alt="logo">
+                <a href="{{ url_for('home')}}">FInvesté</a>
+            </div>
+            <div class="searchbar" onclick="disableClick(event)">
+                <input type="text" autocomplete="off" id="filterInput" placeholder="Search">
+            </div>
+            <div class="headerIcon">
+                <a id="watchlistButton" href="{{ url_for('watchlist')}}">Watchlist</a>
+                <button id="accountButton">Login</button>
+            </div>
+        </div>
+    </header>
+    <div class="body">
+    <div id="popupContainer"></div>
+    <div class="spinnerBg" id="spinnerBg">
+        <div id="spinner" class="spinner"></div>
+    </div>
+    <div class="saveOverlay" id="saveOverlay">
+        <div class="savePopup">
+            <div class="saveHeader">
+                <h4>Save as watchlist</h4>
+                <button id="saveCloseButton"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="saveBody">
+                <form id="saveForm">
+                    <div class="saveWrapper">
+                        <div class="savePrompt">
+                            <h6>Enter the screen name:</h6>
+                            <input type="text" autocomplete="off" id="saveInput" name="collection_name" required>
+                            <h6 id="saveMsg"><span id="saveIcon"></span>&nbsp;<span id="saveAlert"></span></h6>
+                        </div> 
+                         <div class="saveButtons">
+                            <button type="button" class="cancelButton" id="cancelButton">Cancel</button>
+                            <input type="submit" class="confirmButton" value="Save" id="saveButton2">
+                        </div>    
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="filterOverlay" id="filterOverlay">
+        <div class="filterPopup">
+            <div class="filterHeader">
+                <h4>Filter</h4>
+                <button id="filterCloseButton"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="filterBody">
+                <div class="resetDiv">
+                    <button id="clearButton">Reset all&nbsp;<i class="fa-solid fa-arrow-rotate-right"></i></button>
+                </div>
+                <table id="filterTable">
+                    <tr class="filterRow">
+                        <td class="criteriaCol">Open</td>
+                        <td class="filterCol">
+                            <div class="sliderContainer">
+                                <div> <span id="kt_slider_basic_min_open"></span></div>
+                                <div class="rangeOdd" id="kt_slider_basic_open"></div>
+                                <div> <span id="kt_slider_basic_max_open"></span></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="filterRow">
+                        <td class="criteriaCol">High</td>
+                        <td class="filterCol">
+                            <div class="sliderContainer">
+                                <div> <span id="kt_slider_basic_min_high"></span></div>
+                                <div class="rangeEven" id="kt_slider_basic_high"></div>
+                                <div> <span id="kt_slider_basic_max_high"></span></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="filterRow">
+                        <td class="criteriaCol">Low</td>
+                        <td class="filterCol">
+                            <div class="sliderContainer">
+                                <div> <span id="kt_slider_basic_min_low"></span></div>
+                                <div class="rangeOdd" id="kt_slider_basic_low"></div>
+                                <div> <span id="kt_slider_basic_max_low"></span></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="filterRow">
+                        <td class="criteriaCol">Close</td>
+                        <td class="filterCol">                            
+                            <div class="sliderContainer">
+                                <div> <span id="kt_slider_basic_min_close"></span></div>
+                                <div class="rangeEven" id="kt_slider_basic_close"></div>
+                                <div> <span id="kt_slider_basic_max_close"></span></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="filterRow">
+                        <td class="criteriaCol">MA</td>
+                        <td class="filterCol">
+                            <div class="sliderContainer">
+                                <div> <span id="kt_slider_basic_min_MA"></span></div>
+                                <div class="rangeOdd" id="kt_slider_basic_MA"></div>
+                                <div> <span id="kt_slider_basic_max_MA"></span></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="filterRow">
+                        <td class="criteriaCol">EMA</td>
+                        <td class="filterCol">
+                            <div class="sliderContainer">
+                                <div> <span id="kt_slider_basic_min_EMA"></span></div>
+                                <div class="rangeEven" id="kt_slider_basic_EMA"></div>
+                                <div> <span id="kt_slider_basic_max_EMA"></span></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="filterRow">
+                        <td class="criteriaCol">RSI</td>
+                        <td class="filterCol">
+                            <div class="sliderContainer">
+                                <div> <span id="kt_slider_basic_min_RSI"></span></div>
+                                <div class="rangeOdd" id="kt_slider_basic_RSI"></div>
+                                <div> <span id="kt_slider_basic_max_RSI"></span></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="filterRow">
+                        <td class="criteriaCol">Rating</td>
+                        <td class="filterCol">
+                            <select name="ratings" id="ratingOpt">
+                                <option value="All" selected>All</option>
+                                <option value="Strong Buy">Strong Buy</option>
+                                <option value="Buy">Buy</option>
+                                <option value="Neutral">Neutral</option>
+                                <option value="Sell">Sell</option>
+                                <option value="Strong Sell">Strong Sell</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="confirmOverlay" id="logoutOverlay">
+        <div class="confirmPopup">
+            <div class="confirmWrapper">
+                <div class="confirmHeader">
+                    <h5>Confirm to logout?</h5>
+                </div>
+                <div class="confirmBody">
+                    <div class="confirmButtons">
+                        <button type="button" class="cancelButton" id="logoutCancelBtn">Cancel</button>
+                        <input type="submit" class="confirmButton" value="Confirm" id="logoutConfirmBtn">
+                    </div>    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bodyWrapper">
+        <div class="leftContainer">
+            <div class="card">
+                <div class="cardHead">
+                    <h4>Malaysia stocks listed on Bursa</h4>
+                </div>
+                <div class="cardBody">
+                    <p>All data is sourced from Yahoo Finance, ensuring you have the most accurate and up-to-date information.</p>
+                    <div class="cardButton">
+                    <button id="moreButton"><a id="moreLink" target="_blank" href="https://sg.finance.yahoo.com">More&nbsp;<i class="fa-solid fa-arrow-up-right-from-square"></i></a></button>
+                    </div>
+                </div>
+            </div>
+            <div class="wthCard">
+                <div class="favHead">
+                    <h3>Favourites</h3>
+                    <span><i class="bi bi-bookmark-fill" id="bookmarkIcon"></i></span>
+                </div>
+                <div class="favBody">
+                    <table id="favTable">
+                        <tbody id="favBody">
+                            <tr>
+                                <th class="thFav">Stock</th>
+                                <th class="thFav">Rating</th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>        
+        <div class="rightContainer">
+            <div class="utility">
+                <div class="utilityHeading">
+                    <span id="watchlistName">Stock screener</span>
+                </div>
+                <div class="utilityBtn">
+                    <button class="Button" id="saveButton">Save</button>
+                    <button class="Button" id="filterButton">Filter</button>
+                    <button title="Download" onclick="exportTableToCSV('stocks.csv')" id="downloadButton"><i class="bi bi-download"></i></button>
+                </div>
+            </div>
+            <div class="tableview">
+                <table id="myTable">
+                    <thead>
+                       <tr class="theader">
+                            <th onclick=""></th>
+                            <th onclick="sortTable(1)">#</th>
+                            <th class="Ticker" onclick="sortTable(2)">
+                                <div class="ndcol" >
+                                    <div class="tickerword">
+                                        Stock
+                                    </div>
+                                </div>
+                            </th>
+                            <th onclick="sortTable(3)">Open</th>
+                            <th onclick="sortTable(4)">High</th>
+                            <th onclick="sortTable(5)">Low</th>
+                            <th onclick="sortTable(6)">Close</th>
+                            <th onclick="sortTable(7)">MA</th>
+                            <th onclick="sortTable(8)">EMA</th>
+                            <th onclick="sortTable(9)">RSI</th>
+                            <th onclick="sortTable(10)">Rating</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                            <!-- Table rows will be dynamically generated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+</html>
