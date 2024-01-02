@@ -208,6 +208,11 @@ def register():
     if existing_user is None:
         hashpass = generate_password_hash(pass_word, method='scrypt')
         users.insert_one({'name': user_name, 'password': hashpass})
+        new_db = mongo_client[user_name]
+        old_collection = db['Stocks']
+        new_collection = new_db['Default_Screen']
+        documents = list(old_collection.find())
+        new_collection.insert_many(documents)
         return redirect(url_for('login'))
     else:
         flash('Username is used.')
