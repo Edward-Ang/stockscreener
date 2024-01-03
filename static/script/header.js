@@ -23,6 +23,39 @@ var EMAValueMax = document.querySelector("#kt_slider_basic_max_EMA");
 var RSIValueMin = document.querySelector("#kt_slider_basic_min_RSI");
 var RSIValueMax = document.querySelector("#kt_slider_basic_max_RSI");
 
+function checkWindowSize() {
+    var width = window.innerWidth;
+    var saveButton = document.getElementById('saveButton');
+    var filterButton = document.getElementById('filterButton');
+    if (width <= 480) {
+        var saveIcon = document.createElement('i');
+        var filterIcon = document.createElement('i');
+        saveIcon.className = 'bi bi-cloud-download';
+        filterIcon.className = 'bi bi-sliders';
+        saveButton.innerHTML = saveIcon.outerHTML;
+        filterButton.innerHTML = filterIcon.outerHTML;
+    } else {
+        saveButton.textContent = 'Save';
+        filterButton.textContent = 'Filter';
+    }
+}
+
+checkWindowSize();
+
+window.addEventListener('resize', checkWindowSize);
+
+document.getElementById("dropdownButton").addEventListener("click", function() {
+    var menu = document.getElementById("dropdownContent");
+    var header = document.querySelector("header");
+    if (menu.style.display === "none") {
+        header.style.borderRadius = "8px 8px 0px 0px";
+        menu.style.display = "inline-block";
+    } else {
+      menu.style.display = "none";
+      header.style.borderRadius = "8px 8px 8px 8px";
+    }
+});  
+
 async function getUsername() {
     const response = await fetch('/get_session', {redirect: 'follow'});
     const data = await response.json();

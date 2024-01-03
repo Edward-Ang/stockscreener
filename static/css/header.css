@@ -35,6 +35,8 @@ header{
 .headerLogo{
   display: flex;
   padding-left: 4.2%;
+  justify-content: center;
+  align-items: center;
 }
 
 .headerLogo img{
@@ -53,8 +55,24 @@ header{
   justify-content: space-between;
 }
 
+#dropdownContent{
+  display: flex;
+  justify-content: space-between;
+}
+
+#dropdownButton{
+  display: none;
+  background-color: transparent;
+  box-shadow: none;
+  border: none;
+  width: fit-content;
+  justify-content: right;
+  align-items: right;
+  color: var(--white);
+}
+
 #accountButton{
-  height: auto;
+  height: 36px;
   padding: 2px 12px 3px 12px;
   border-radius: 10px;
   border-color: var(--blue);
@@ -74,8 +92,22 @@ header{
   padding-bottom: 3px;
   padding-left: 8px;
   padding-right: 8px;
-  margin-right: 23%;
   transition: all 85ms ease-out;
+}
+
+#watchlistButtonLi{
+  margin-right: 23%;
+}
+
+ul{
+  height: max-content;
+}
+
+li{
+  height: fit-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #watchlistButton:hover{
