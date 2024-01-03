@@ -1,80 +1,69 @@
 
 @media screen and (min-width: 370px) and (max-width: 414px){
   html{
-    width: 100%;
+    width: 96%;
   }
 
-  body{
-    height: 98.8vh;
-    width: 100%;
+  body {
+    height: 100vh;
+    margin: 0;
+    width: 103.5%;
   }
 
-  header{ 
-    background-color: var(--card_black);
+  header{
     margin: 8px 8px 10px 8px;
     border-radius: 8px;
-    height: 68px;
-    width: 98.85%;
+    height: 59px;
+    width: auto;
     padding-top: 14px;
-    justify-content: center;
-    border: 2px solid var(--blue);
   }
-  
   
   .headerbar{
     height: 36px;
     display: flex;
     justify-content: space-between;
     width: 100%;
-    border: 2px solid var(--border_gray);
   }
 
   .headerLogo{
-  display: flex;
-  padding-left: 0px;
-}
+    display: flex;
+    margin: 0;
+    padding: 0;
+  }
 
   .headerLogo img{
-  margin-right: 0px;
-}
+    font-size: 18px;
+    margin-right: 3px;
+  }
 
-.headerbar a{
-  font-size: 24px;
-  text-decoration: none;
-  color: var(--white);
-}
+  .headerbar a{
+    font-size: 18px;
+    text-decoration: none;
+    color: var(--white);
+  }
 
-.headerIcon{
-  display: flex;
-  padding-right: 0%;
-  justify-content: space-between;
-}
+  .bodyWrapper{
+    width: auto;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
+  }
 
-#accountButton{
-  height: auto;
-  padding: 2px 12px 3px 12px;
-  border-radius: 10px;
-  border-color: var(--blue);
-  background-color: transparent;
-  color: var(--white);
-  box-shadow: none;
-  border-style: solid;
-  border-width: 1px;
-  display: inline-block;
-}
+  .rightContainer{
+    width: auto;
+    height: 100%;
+    margin-left: 0;
+    margin-top: 10px;
+  }
 
-#watchlistButton{
-  height: auto;
-  color: var(--white);
-  font-size: 16px;
-  padding-top: 5px;
-  padding-bottom: 3px;
-  padding-left: 8px;
-  padding-right: 8px;
-  margin-right: 0%;
-  transition: all 85ms ease-out;
-}
-
+  .leftContainer{
+    width: auto;
+    height: max-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
 
 }
 
