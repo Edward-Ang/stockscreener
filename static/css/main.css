@@ -151,7 +151,7 @@ table {
   justify-content: center;
   align-items: center;
   color: var(--white);
-  margin-left: 4px;
+  margin-right: 4px;
 }
 
 .utilityBtn{
@@ -388,6 +388,7 @@ th:hover {
 }
 
 .stockLogo{
+  display: flex;
   margin-right: 8px;
   justify-content: center;
   align-items: center;

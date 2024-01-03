@@ -37,9 +37,12 @@
             <div class="searchbar" onclick="disableClick(event)">
                 <input type="text" autocomplete="off" id="filterInput" placeholder="Search">
             </div>
-            <div class="headerIcon">
-                <a id="watchlistButton" href="{{ url_for('watchlist')}}">Watchlist</a>
-                <button id="accountButton">Login</button>
+            <div class="headerIcon" id="dropdownMenu">
+                <button id="dropdownButton"><i class="fa-solid fa-bars"></i></button>
+                <ul id="dropdownContent">
+                    <li id="watchlistButtonLi"><a id="watchlistButton" href="{{ url_for('watchlist')}}">Watchlist</a></li>
+                    <li><button id="accountButton">Login</button></li>
+                </ul>
             </div>
         </div>
     </header>

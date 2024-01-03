@@ -1,5 +1,5 @@
 
-@media screen and (min-width: 370px) and (max-width: 414px){
+@media screen and (min-width: 250px) and (max-width: 480px){
   html{
     width: 96%;
   }
@@ -11,35 +11,103 @@
   }
 
   header{
-    margin: 8px 8px 10px 8px;
-    border-radius: 8px;
+    margin: 8px 10px 10px 10px;
+    border-radius: 8px 8px 8px 8px;
     height: 59px;
     width: auto;
-    padding-top: 14px;
+    padding-top: 11px;
   }
   
   .headerbar{
     height: 36px;
     display: flex;
     justify-content: space-between;
-    width: 100%;
+    width: 95.3%;
   }
 
   .headerLogo{
     display: flex;
     margin: 0;
     padding: 0;
+    width: fit-content;
   }
 
   .headerLogo img{
-    font-size: 18px;
     margin-right: 3px;
+    width: 36px;
+    height: 36px;
   }
 
   .headerbar a{
-    font-size: 18px;
+    font-size: 20px;
     text-decoration: none;
     color: var(--white);
+  }
+
+  .searchbar{
+    margin: 0;
+  }
+
+  #filterInput{
+    font-size: 12px;
+
+    &::placeholder {
+      padding-left: 0px;
+    }
+  }
+
+  .headerIcon{
+    position: relative;
+    display: inline-block;
+    text-align: center;
+    padding: 0;
+    height: max-content;
+    z-index: 1;
+    height: auto;
+  }
+
+  #dropdownButton{
+    display: block;
+    justify-content: center;
+    margin-top: 3px;
+  }
+
+  #dropdownButton i{
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  #dropdownContent{
+    display: none;
+    position: fixed;
+    right: 0;
+    list-style-type: none;
+    padding: 0;
+    margin-top: 16px;
+    margin-right: 3.3%;
+    width: 94%;
+    background-color: var(--card_black);
+    border: 2px solid var(--border_gray);
+    border-radius: 0px 0px 8px 8px;
+  }
+
+  #watchlistButton{
+    margin: 0;
+    font-size: 16px;
+    height: 36px;
+  }
+
+  #watchlistButtonLi{
+    margin-right: 0;
+  }
+
+  li{
+    margin: 5px;
+  }
+
+  #accountButton{
+    border: none;
+    font-size: 16px;
   }
 
   .bodyWrapper{
@@ -51,18 +119,80 @@
   }
 
   .rightContainer{
+    order: 1;
     width: auto;
     height: 100%;
     margin-left: 0;
-    margin-top: 10px;
   }
 
+  .utilityHeading{
+    margin-right: 5%;
+  }
+
+  .Button{
+    width: 76px;
+    height: 35px;
+    box-shadow: none;
+    border: none;
+    color: var(--white);
+    width: fit-content;
+    background-color: #35363c00;
+  }
+
+  #saveButton{
+    padding-left: 13%;
+    border-radius: 0px;
+    border-left: 2px solid var(--border_gray);
+    box-shadow: none;
+    margin-right: 4px;
+  }
+
+  #downloadButton{
+    margin-left: 0;
+  }
+
+  #watchlistName{
+    font-size: 18px;
+  }
+
+  th, td, .stockTicker{
+    font-size: 12px;
+  }
+
+  .stockName{
+    font-size: 10px;
+  }
+
+  .stockLogo img{
+    width: 30px;
+  }
+
+  .favHead h3, #bookmarkIcon{
+    font-size: 18px;
+  }
+  
   .leftContainer{
+    order: 2;
     width: auto;
     height: max-content;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .filterPopup, .savePopup, .confirmPopup {
+    width: 100%;
+    height: fit-content;
+  }
+
+  .filterPopup{
+    height: 98%;
+  }
+
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
   }
 
 }
