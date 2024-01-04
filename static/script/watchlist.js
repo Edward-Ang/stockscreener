@@ -9,7 +9,7 @@ var accountButton = document.getElementById('accountButton');
 var logoutOverlay = document.getElementById('logoutOverlay');
 var logoutCancelBtn = document.getElementById('logoutCancelBtn');
 var logoutConfirmBtn = document.getElementById('logoutConfirmBtn');
-var deleteCancleButton = document.getElementById('deleteCancelButton');
+var deleteCancelButton = document.getElementById('deleteCancelButton');
 var saveAlert = document.getElementById('saveAlert');
 var renameMsg = document.getElementById('renameMsg');
 var saveIcon = document.getElementById('saveIcon');
@@ -38,6 +38,18 @@ accountButton.addEventListener('click', function(){
     })
   }
 });
+
+document.getElementById("dropdownButton").addEventListener("click", function() {
+  var menu = document.getElementById("dropdownContent");
+  var header = document.querySelector("header");
+  if (menu.style.display === "none") {
+      header.style.borderRadius = "8px 8px 0px 0px";
+      menu.style.display = "inline-block";
+  } else {
+    menu.style.display = "none";
+    header.style.borderRadius = "8px 8px 8px 8px";
+  }
+});  
 
 fetch('/get_watchlist')
 .then(response => response.json())

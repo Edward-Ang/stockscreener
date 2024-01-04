@@ -1,5 +1,26 @@
 var spinnerBg = document.getElementById('spinnerBg');
 
+function checkWindowSize() {
+  var width = window.innerWidth;
+  var saveButton = document.getElementById('saveButton');
+  var filterButton = document.getElementById('filterButton');
+  if (width <= 480) {
+      var saveIcon = document.createElement('i');
+      var filterIcon = document.createElement('i');
+      saveIcon.className = 'bi bi-cloud-download';
+      filterIcon.className = 'bi bi-sliders';
+      saveButton.innerHTML = saveIcon.outerHTML;
+      filterButton.innerHTML = filterIcon.outerHTML;
+  } else {
+      saveButton.textContent = 'Save';
+      filterButton.textContent = 'Filter';
+  }
+}
+
+checkWindowSize();
+
+window.addEventListener('resize', checkWindowSize);
+
 function disableClick(event) {
     event.stopPropagation();
 }
