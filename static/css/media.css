@@ -12,7 +12,6 @@
 
   header{
     margin: 8px 10px 10px 10px;
-    border-radius: 8px 8px 8px 8px;
     height: 59px;
     width: auto;
     padding-top: 11px;
@@ -48,7 +47,7 @@
     margin: 0;
   }
 
-  #filterInput{
+  #filterInput, #filterScreenInput{
     font-size: 12px;
 
     &::placeholder {
@@ -84,8 +83,8 @@
     list-style-type: none;
     padding: 0;
     margin-top: 16px;
-    margin-right: 3.3%;
-    width: 94%;
+    margin-right: 4%;
+    width: 92.6%;
     background-color: var(--card_black);
     border: 2px solid var(--border_gray);
     border-radius: 0px 0px 8px 8px;
@@ -123,6 +122,10 @@
     width: auto;
     height: 100%;
     margin-left: 0;
+  }
+
+  .utility{
+    width: auto;
   }
 
   .utilityHeading{
@@ -182,17 +185,32 @@
   }
 
   .filterPopup, .savePopup, .confirmPopup {
-    width: 100%;
+    width: fit-content;
     height: fit-content;
   }
 
   .filterPopup{
     height: 98%;
+    width: 100%;
   }
 
   ::-webkit-scrollbar {
     width: 5px;
     height: 5px;
+  }
+
+  #saveCloseButton, #filterCloseButton{
+    font-size: 18px;
+  }
+
+  .renamePopup{
+    width: fit-content;
+    height: fit-content;
+  }
+
+  .criteriaCol{
+    padding-left: 2%;
+    width: 50px;
   }
 
 }
