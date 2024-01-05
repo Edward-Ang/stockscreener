@@ -1,0 +1,13 @@
+@media screen and (min-width: 250px) and (max-width: 480px){
+    .half, .half .container > .row {
+        height: 100%;
+    }
+
+    .half .contents {
+        width: 98%;
+    }
+
+    .half .bg{
+        width: 98.5%;
+    }
+}
