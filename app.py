@@ -10,20 +10,32 @@ app.secret_key = os.environ.get('SECRET_KEY') or 'fallback_secret_key'
 mongo_client = MongoClient('mongodb://localhost:27017/')
 
 host_info = mongo_client['HOST']
-print ("host:", host_info)
+print ("Mongo host info:", host_info)
+
+def get_user_id(username):
+    db = mongo_client['FInvest']
+    collection = db['users']
+    
+    user_document = collection.find_one({"name": username})
+    
+    if user_document:
+        user_id = str(user_document.get('_id'))
+        return user_id
+    else:
+        return "User not exist"
 
 @app.route('/')
 def index():
     if 'username' in session:
-        print('Current user: ' + session['username'])
+        print('\nCurrent user: ' + session['username'] + "\n")
     else:
-        print('No user is currently logged in.')
+        print('\nNo user is currently logged in.\n')
     return render_template('index.html')
 
 @app.route('/home')
 def home():
     if 'username' in session:
-        print('Current user:' + session['username'])
+        print('\nCurrent user: ' + session['username'] + "\n")
         return render_template('index.html')
     else:
         return redirect(url_for('login'))
@@ -42,6 +54,7 @@ def login():
 
 @app.route('/logout')
 def logout():
+    print("User[ ", session['username'], " ] is logged out.")
     session.pop('username', None)
     return redirect(url_for('login'))
 
@@ -52,60 +65,62 @@ def view():
 @app.route('/get_main', methods=['GET'])
 def get_main():
     username = session.get('username', None)
+    user_id = get_user_id(username)
     if username is None:
         db = mongo_client['FInvest']
         collection = db['Stocks']
         documents = list(collection.find({}, {"_id": 0}))
         return jsonify(documents)
     else:
-        db = mongo_client[username]
+        db = mongo_client[user_id]
         collection = db['Default_Screen']
         documents = list(collection.find({}, {"_id": 0}))
         return jsonify(documents)
     
 @app.route('/rename_watchlist', methods=['POST'])
 def rename_watchlist():
+    print("-----Rename Watchlist-----")
     data = request.get_json()
     old_watchlist = data.get('old_watchlist')
     new_watchlist = data.get('new_watchlist')
     username = session.get('username', None)
-
-    print(username, old_watchlist, new_watchlist)
+    user_id = get_user_id(username)
 
     if username is None:
         return render_template('signup.html')
     else:
         if new_watchlist:
-            db = mongo_client[username]
+            db = mongo_client[user_id]
             old_collection = db[old_watchlist]
             old_collection.rename(new_watchlist)
             watchlist = db['Watchlist']
             watchlist.update_one({"Name": old_watchlist}, {"$set": {"Name": new_watchlist}})
+            print(old_watchlist, " is renamed to ", new_watchlist, "\n")
             return redirect(url_for('watchlist'))
         else:
             return "error: new watchlist name"
 
 @app.route('/update_fav', methods=['POST'])
 def update_fav():
+    print("-----Bookmark-----\n")
     username = session.get('username', None)
+    user_id = get_user_id(username)
     if username is None:
         return render_template('signup.html')
     else:
-        db = mongo_client[username]
+        db = mongo_client[user_id]
         collection = db['Default_Screen']
         data = request.get_json()
         ticker = data.get('ticker')
-        print(ticker)
         item = collection.find_one({"Stock": ticker})
         if item is not None:
-            status = item.get('Book')   
-            print(status)
+            status = item.get('Book')
             if(status == 1):
                 collection.update_one({"Stock": ticker},{"$set":{"Book": 0}})
             else:
                 collection.update_one({"Stock": ticker},{"$set":{"Book": 1}})
         else:
-            print('status is None')
+            print('status is None\n')
         return redirect(url_for('index'))
 
 @app.route('/screen', methods=['POST'])
@@ -113,17 +128,17 @@ def screen():
     data = request.get_json()
     scrnName = data.get('scrnName')
     session['scrnName'] = scrnName
-    print(session['scrnName'])
     return redirect(url_for('view'))
 
 @app.route('/get_screen', methods=['GET'])
 def get_screen():
     curUser = session['username']
+    user_id = get_user_id(curUser)
     if 'scrnName' in session:
         curScreen = session['scrnName']
     else:
         curScreen = 'defaultScreen'
-    db = mongo_client[curUser]
+    db = mongo_client[user_id]
     collection = db[curScreen]
     documents = list(collection.find({}, {"_id": 0}))
     return jsonify(documents)
@@ -144,8 +159,10 @@ def get_session():
 
 @app.route('/insert_data', methods=['POST'])
 def insert_data():
+    print("-----Save Watchlist-----\n")
     curUser = session['username']
-    db = mongo_client[curUser]
+    user_id = get_user_id(curUser)
+    db = mongo_client[user_id]
     watchlist = db['Watchlist']
 
     data = request.get_json()
@@ -166,7 +183,8 @@ def insert_data():
 @app.route('/get_watchlist_name', methods=['GET'])
 def get_collection_name():
     curUser = session['username']
-    db = mongo_client[curUser]
+    user_id = get_user_id(curUser)
+    db = mongo_client[user_id]
     collection = db['Watchlist']
     data = list(collection.find({}, {'Name': 1, 'Date': 1, 'Time' :1, '_id': 0}))
     values = [item['Name'] for item in data]
@@ -175,15 +193,18 @@ def get_collection_name():
 @app.route('/get_watchlist', methods=['GET'])
 def get_collection_data():
     curUser = session['username']
-    db = mongo_client[curUser]
+    user_id = get_user_id(curUser)
+    db = mongo_client[user_id]
     collection = db['Watchlist']
     data = list(collection.find({}, {'Name': 1, 'Date': 1, 'Time' :1, '_id': 0}))
     return jsonify(data)  # Convert the list to JSON to return it.
 
 @app.route('/delete_watchlist', methods=['POST'])
 def delete_watchlist():
+     print("-----Delete Watchlist-----\n")
      curUser = session['username']
-     db = mongo_client[curUser]
+     user_id = get_user_id(curUser)
+     db = mongo_client[user_id]
 
      data = request.get_json()
      watchlist_name = data.get("watchlist_name")
@@ -198,21 +219,25 @@ def delete_watchlist():
 
 @app.route('/register', methods=['POST'])
 def register():
-    db = mongo_client.FInvest
+    print("-----Registration-----")
+    db = mongo_client['FInvest']
     user_name = request.form['username']
     pass_word = request.form['password']
 
-    users = db.users
-    existing_user = users.find_one({'name': user_name})
+    users = db['users']
+    existing_user = users.find_one({"name": user_name})
 
     if existing_user is None:
         hashpass = generate_password_hash(pass_word, method='scrypt')
-        users.insert_one({'name': user_name, 'password': hashpass})
-        new_db = mongo_client[user_name]
+        inserted_user = users.insert_one({'name': user_name, 'password': hashpass})
+        userid = str(inserted_user.inserted_id)
+
+        new_db = mongo_client[userid]
         old_collection = db['Stocks']
         new_collection = new_db['Default_Screen']
         documents = list(old_collection.find())
         new_collection.insert_many(documents)
+        print("User register secessfully!\n")
         return redirect(url_for('login'))
     else:
         flash('Username is used.')
@@ -220,27 +245,23 @@ def register():
 
 @app.route('/signin', methods=['POST'])
 def signin():
+    print("-----Log In------")
     db = mongo_client.FInvest
     users = db.users
     user_name = request.form['username']
     pass_word = request.form['password']
     remember_me = 'remember_me' in request.form
-    print(user_name)
-    print(pass_word)
-    print(remember_me)
     login_user = users.find_one({'name': user_name})
-    print(login_user)
 
     if login_user:
         if check_password_hash(login_user['password'], pass_word):
             session.permanent = remember_me
-            print("session.permanent: ", session.permanent)
             if session.permanent is True:
-                print('triggered')
                 app.permanent_session_lifetime = timedelta(minutes=30)
 
             session['username'] = user_name
-            print(session['username'])
+            print("User logged in: ", session['username'])
+            print("Session.permanent: ", session.permanent, "\n")
             return redirect(url_for('home'))
         
     flash('Invalid username/password combination.')
