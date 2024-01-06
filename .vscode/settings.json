@@ -2,5 +2,5 @@
     "liveServer.settings.port": 5501,
     "python.analysis.typeCheckingMode": "basic",
     "python.analysis.autoImportCompletions": false,
-    "editor.inlineSuggest.showToolbar": "always"
+    "editor.inlineSuggest.showToolbar": "onHover"
 }
