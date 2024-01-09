@@ -2,20 +2,65 @@ from flask import Flask, render_template, request, jsonify, redirect, url_for, s
 from pymongo import MongoClient
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import timedelta
-import os
+from itsdangerous import URLSafeTimedSerializer
+from flask_mail import Mail, Message
+import os, re, secrets
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY') or 'fallback_secret_key'
-
+salt = secrets.token_hex(16)  # Generating a 16-byte salt using secrets module
+serializer = URLSafeTimedSerializer(app.secret_key)
 mongo_client = MongoClient('mongodb://localhost:27017/')
-
 host_info = mongo_client['HOST']
 print ("Mongo host info:", host_info)
+
+app.config['MAIL_SERVER'] = 'smtp.googlemail.com.'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'finveste111@gmail.com' 
+app.config['MAIL_PASSWORD'] = 'hrksckybyvlwbohc'
+
+mail = Mail(app)
+
+@app.route('/reset_password', methods=['POST'])
+def reset_request():
+    db = mongo_client['FInvest']
+    collection = db['users']
+    email = request.form['email']
+    user = collection.find_one({'name': email})
+
+    if user:
+        token = serializer.dumps(email, salt=salt)
+        reset_url = url_for('reset_token', token=token, _external=True)
+        msg = Message('Your Password Reset Link', sender='noreply@finveste.com', recipients=[email])
+        msg.body = f'Here is your password reset link: {reset_url}'
+        mail.send(msg)
+        flash("Reset link is sent to your email.")
+        return redirect(url_for('reset'))
+    else:
+        flash("Account doest not exist.")
+        return redirect(url_for('reset'))
+
+@app.route('/reset_password/<token>', methods=['GET', 'POST'])
+def reset_token(token):
+    db = mongo_client['FInvest']
+    collection = db['users']
+    try:
+        email = serializer.loads(token, salt=salt, max_age=3600)
+    except:
+        return redirect(url_for('reset_request'))
+
+    if request.method == 'POST':
+        password = request.form['password']
+        hashpass = generate_password_hash(password, method='scrypt')
+        collection.update_one({'name': email}, {'$set': {'password': hashpass}})
+        return redirect(url_for('login'))
+
+    return render_template('reset_token.html', title='Reset Password', token=token)
 
 def get_user_id(username):
     db = mongo_client['FInvest']
     collection = db['users']
-    
     user_document = collection.find_one({"name": username})
     
     if user_document:
@@ -23,6 +68,16 @@ def get_user_id(username):
         return user_id
     else:
         return "User not exist"
+
+def is_valid_email(email):
+    # Regular expression for basic email validation
+    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    
+    # Using re.match to check if the email matches the pattern
+    if re.match(pattern, email):
+        return True
+    else:
+        return False
 
 @app.route('/')
 def index():
@@ -61,6 +116,10 @@ def logout():
 @app.route('/view')
 def view():
     return render_template('screen.html')
+
+@app.route('/reset')
+def reset():
+    return render_template('reset.html')
 
 @app.route('/get_main', methods=['GET'])
 def get_main():
@@ -224,24 +283,29 @@ def register():
     user_name = request.form['username']
     pass_word = request.form['password']
 
-    users = db['users']
-    existing_user = users.find_one({"name": user_name})
-
-    if existing_user is None:
-        hashpass = generate_password_hash(pass_word, method='scrypt')
-        inserted_user = users.insert_one({'name': user_name, 'password': hashpass})
-        userid = str(inserted_user.inserted_id)
-
-        new_db = mongo_client[userid]
-        old_collection = db['Stocks']
-        new_collection = new_db['Default_Screen']
-        documents = list(old_collection.find())
-        new_collection.insert_many(documents)
-        print("User register secessfully!\n")
-        return redirect(url_for('login'))
-    else:
-        flash('Username is used.')
+    user_email = is_valid_email(user_name)
+    if user_email == False:
+        flash('Username is not a valid email.')
         return render_template('signup.html')
+    else:
+        users = db['users']
+        existing_user = users.find_one({"name": user_name})
+
+        if existing_user is None:
+            hashpass = generate_password_hash(pass_word, method='scrypt')
+            inserted_user = users.insert_one({'name': user_name, 'password': hashpass})
+            userid = str(inserted_user.inserted_id)
+
+            new_db = mongo_client[userid]
+            old_collection = db['Stocks']
+            new_collection = new_db['Default_Screen']
+            documents = list(old_collection.find())
+            new_collection.insert_many(documents)
+            print("User register secessfully!\n")
+            return redirect(url_for('login'))
+        else:
+            flash('Username is used.')
+            return render_template('signup.html')
 
 @app.route('/signin', methods=['POST'])
 def signin():

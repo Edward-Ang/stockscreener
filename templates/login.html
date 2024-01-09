@@ -27,8 +27,9 @@
             <form action="/signin" method="post">
               <div class="form-group first">
                 <label for="username">Username</label>
-                <input type="text" class="form-control" placeholder="your-email@gmail.com" name="username" id="username" required>
+                <input type="email" class="form-control" placeholder="your-email@gmail.com" name="username" id="username" required>
               </div>
+
               <div class="form-group last mb-3">
                 <label for="password">Password</label>
                 <input type="password" class="form-control" placeholder="your password" name="password" id="password" required>
@@ -39,7 +40,7 @@
                   <input type="checkbox" checked="checked" name="remember_me"/>
                   <div class="control__indicator"></div>
                 </label>
-                <span class="ml-auto"><a href="#" class="forgot-pass">Forgot Password</a></span> 
+                <span class="ml-auto"><a href="/reset" class="forgot-pass">Forgot Password</a></span> 
               </div>
               {% with messages = get_flashed_messages() %}
               {% if messages %}
@@ -54,11 +55,8 @@
                 <span class="caption">Don't have an account?</span>
                 <span class="ml-auto"><a href="{{ url_for('signup')}}" class="switch-pass">Sign up here</a></span>
               </div>
-
             </form>
           </div>
-        
-      
     </div>
   </div>
   </body>
