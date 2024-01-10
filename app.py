@@ -17,8 +17,8 @@ mongo_client = MongoClient('mongodb://localhost:27017/')
 host_info = mongo_client['HOST']
 print ("Mongo host info:", host_info)
 
-app.config['MAIL_SERVER'] = os.getenv('SMTP_SERVER')
-app.config['MAIL_PORT'] = os.getenv('SMTP_PORT')
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = os.getenv('SMTP_USERNAME')
 app.config['MAIL_PASSWORD'] = os.getenv('SMTP_PASSWORD')
