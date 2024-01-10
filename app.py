@@ -23,6 +23,12 @@ app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = os.getenv('SMTP_USERNAME')
 app.config['MAIL_PASSWORD'] = os.getenv('SMTP_PASSWORD')
 
+print(app.config['MAIL_SERVER'])
+print(app.config['MAIL_PORT']) 
+print(app.config['MAIL_USE_TLS'])
+print(app.config['MAIL_USERNAME'])
+print(app.config['MAIL_PASSWORD'])
+
 try:
     server = smtplib.SMTP(app.config['MAIL_SERVER'], app.config['MAIL_PORT'])
     server.starttls()
