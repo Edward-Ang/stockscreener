@@ -14,16 +14,16 @@ mongo_client = MongoClient('mongodb://localhost:27017/')
 host_info = mongo_client['HOST']
 print ("Mongo host info:", host_info)
 
-app.config['MAIL_SERVER'] = 'smtp.googlemail.com.'
+app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'finveste111@gmail.com' 
+app.config['MAIL_USERNAME'] = 'finveste111@gmail.com'
 app.config['MAIL_PASSWORD'] = 'hrksckybyvlwbohc'
 
 mail = Mail(app)
 
-@app.route('/reset_password', methods=['POST'])
-def reset_request():
+@app.route('/reset_password', methods=['GET', 'POST'])
+def reset_request(): 
     db = mongo_client['FInvest']
     collection = db['users']
     email = request.form['email']
