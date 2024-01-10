@@ -5,7 +5,7 @@ from datetime import timedelta
 from itsdangerous import URLSafeTimedSerializer
 from flask_mail import Mail, Message
 from dotenv import load_dotenv
-import os, re, secrets
+import os, re, secrets, smtplib
 
 load_dotenv('config.env')
 
@@ -22,6 +22,15 @@ app.config['MAIL_PORT'] = os.getenv('SMTP_PORT')
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = os.getenv('SMTP_USERNAME')
 app.config['MAIL_PASSWORD'] = os.getenv('SMTP_PASSWORD')
+
+try:
+    server = smtplib.SMTP(app.config['MAIL_SERVER'], app.config['MAIL_PORT'])
+    server.starttls()
+    server.login(app.config['MAIL_USERNAME'], app.config['MAIL_PASSWORD'])
+    print("Connection successful!")
+    server.quit()
+except Exception as e:
+    print("Error connecting to SMTP server:", e)
 
 mail = Mail(app)
 
