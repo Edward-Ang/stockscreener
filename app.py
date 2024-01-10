@@ -65,6 +65,7 @@ def reset_token(token):
     collection = db['users']
     try:
         email = serializer.loads(token, salt=salt, max_age=3600)
+        print(email)
     except:
         return redirect(url_for('reset_request'))
 
