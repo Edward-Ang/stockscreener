@@ -5,6 +5,7 @@ from datetime import timedelta
 from itsdangerous import URLSafeTimedSerializer
 from flask_mail import Mail, Message
 from dotenv import load_dotenv
+from urllib.parse import quote
 import os, re, secrets, smtplib
 
 load_dotenv('config.env')
@@ -49,7 +50,7 @@ def reset_request():
 
     if user:
         token = serializer.dumps(email, salt=salt)
-        reset_url = url_for('reset_token', token=token, _external=True)
+        reset_url = url_for('reset_token', token=quote(token), _external=True)
         msg = Message('Your Password Reset Link', sender=app.config['MAIL_USERNAME'], recipients=[email])
         msg.body = f'Here is your password reset link: {reset_url}'
         mail.send(msg)
