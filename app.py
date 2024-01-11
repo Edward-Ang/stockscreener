@@ -5,7 +5,6 @@ from datetime import timedelta
 from itsdangerous import URLSafeTimedSerializer
 from flask_mail import Mail, Message
 from dotenv import load_dotenv
-from urllib.parse import quote
 import os, re, secrets, smtplib
 
 load_dotenv('config.env')
@@ -28,7 +27,6 @@ print(app.config['MAIL_SERVER'])
 print(app.config['MAIL_PORT']) 
 print(app.config['MAIL_USE_TLS'])
 print(app.config['MAIL_USERNAME'])
-print(app.config['MAIL_PASSWORD'])
 
 try:
     server = smtplib.SMTP(app.config['MAIL_SERVER'], app.config['MAIL_PORT'])
@@ -50,7 +48,7 @@ def reset_request():
 
     if user:
         token = serializer.dumps(email, salt=salt)
-        reset_url = url_for('reset_token', token=quote(token), _external=True)
+        reset_url = url_for('reset_token', token=token, _external=True)
         msg = Message('Your Password Reset Link', sender=app.config['MAIL_USERNAME'], recipients=[email])
         msg.body = f'Here is your password reset link: {reset_url}'
         mail.send(msg)
@@ -102,15 +100,15 @@ def is_valid_email(email):
 @app.route('/')
 def index():
     if 'username' in session:
-        print('\nCurrent user: ' + session['username'] + "\n")
+        print('Current user: ' + session['username'] + "\n")
     else:
-        print('\nNo user is currently logged in.\n')
+        print('No user is currently logged in.\n')
     return render_template('index.html')
 
 @app.route('/home')
 def home():
     if 'username' in session:
-        print('\nCurrent user: ' + session['username'] + "\n")
+        print('Current user: ' + session['username'] + "\n")
         return render_template('index.html')
     else:
         return redirect(url_for('login'))
