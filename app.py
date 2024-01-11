@@ -5,6 +5,7 @@ from datetime import timedelta
 from itsdangerous import URLSafeTimedSerializer
 from flask_mail import Mail, Message
 from dotenv import load_dotenv
+from threading import Thread
 import os, re, secrets, smtplib
 
 load_dotenv('config.env')
@@ -39,6 +40,10 @@ except Exception as e:
 
 mail = Mail(app)
 
+def send_email(app, msg):
+    with app.app_context():
+        mail.send(msg)
+
 @app.route('/reset_password', methods=['GET', 'POST'])
 def reset_request(): 
     db = mongo_client['FInvest']
@@ -51,7 +56,7 @@ def reset_request():
         reset_url = url_for('reset_token', token=token, _external=True)
         msg = Message('Your Password Reset Link', sender=app.config['MAIL_USERNAME'], recipients=[email])
         msg.body = f'Here is your password reset link: {reset_url}'
-        mail.send(msg)
+        Thread(target=send_email, args=(app, msg)).start()
         flash("Reset link is sent to your email.")
         return redirect(url_for('reset'))
     else:
