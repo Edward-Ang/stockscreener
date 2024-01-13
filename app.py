@@ -25,15 +25,13 @@ app.config['MAIL_USERNAME'] = os.getenv('SMTP_USERNAME')
 app.config['MAIL_PASSWORD'] = os.getenv('SMTP_PASSWORD')
 
 print(app.config['MAIL_SERVER'])
-print(app.config['MAIL_PORT']) 
-print(app.config['MAIL_USE_TLS'])
 print(app.config['MAIL_USERNAME'])
 
 try:
     server = smtplib.SMTP(app.config['MAIL_SERVER'], app.config['MAIL_PORT'])
     server.starttls()
     server.login(app.config['MAIL_USERNAME'], app.config['MAIL_PASSWORD'])
-    print("Connection successful!")
+    print("SMTP server Connection successful!")
     server.quit()
 except Exception as e:
     print("Error connecting to SMTP server:", e)
