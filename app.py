@@ -12,7 +12,7 @@ load_dotenv('config.env')
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY') or 'fallback_secret_key'
-salt = secrets.token_hex(16)  # Generating a 16-byte salt using secrets module
+salt = 'my_random_salt'#secrets.token_hex(16)  # Generating a 16-byte salt using secrets module
 serializer = URLSafeTimedSerializer(app.secret_key)
 mongo_client = MongoClient('mongodb://localhost:27017/')
 host_info = mongo_client['HOST']
