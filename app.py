@@ -71,7 +71,8 @@ def reset_token(token):
         email = serializer.loads(token, salt=salt, max_age=3600)
         print(email)
     except:
-        return redirect(url_for('reset_request'))
+        flash("Link expired. Please get new reset link.")
+        return redirect(url_for('reset'))
 
     if request.method == 'POST':
         password = request.form['password']
