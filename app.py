@@ -12,7 +12,7 @@ load_dotenv('config.env')
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY') or 'fallback_secret_key'
-salt = 'my_random_salt'#secrets.token_hex(16)  # Generating a 16-byte salt using secrets module
+salt = 'my_random_salt' #secrets.token_hex(16)  #Generating a 16-byte salt using secrets module
 serializer = URLSafeTimedSerializer(app.secret_key)
 mongo_client = MongoClient('mongodb://localhost:27017/')
 host_info = mongo_client['HOST']
@@ -55,10 +55,10 @@ def reset_request():
         msg = Message('Your Password Reset Link', sender=app.config['MAIL_USERNAME'], recipients=[email])
         msg.body = f'Here is your password reset link: {reset_url}'
         Thread(target=send_email, args=(app, msg)).start()
-        flash("Reset link is sent to your email.")
+        flash("Reset link is sent to your email.", "success")
         return redirect(url_for('reset'))
     else:
-        flash("Account doest not exist.")
+        flash("Account doest not exist.", "warning")
         return redirect(url_for('reset'))
 
 @app.route('/reset_password/<token>', methods=['GET', 'POST'])
@@ -69,13 +69,14 @@ def reset_token(token):
         email = serializer.loads(token, salt=salt, max_age=3600)
         print(email)
     except:
-        flash("Link expired. Please get new reset link.")
+        flash("Link expired. Please get new reset link.", "warning")
         return redirect(url_for('reset'))
 
     if request.method == 'POST':
         password = request.form['password']
         hashpass = generate_password_hash(password, method='scrypt')
         collection.update_one({'name': email}, {'$set': {'password': hashpass}})
+        flash("Password reset sucessfully!", "success")
         return redirect(url_for('login'))
 
     return render_template('reset_token.html', title='Reset Password', token=token)
@@ -307,7 +308,7 @@ def register():
 
     user_email = is_valid_email(user_name)
     if user_email == False:
-        flash('Username is not a valid email.')
+        flash('Username is not a valid email.', 'warning')
         return render_template('signup.html')
     else:
         users = db['users']
@@ -326,7 +327,7 @@ def register():
             print("User register secessfully!\n")
             return redirect(url_for('login'))
         else:
-            flash('Username is used.')
+            flash('Username is used.', 'warning')
             return render_template('signup.html')
 
 @app.route('/signin', methods=['POST'])
@@ -350,7 +351,7 @@ def signin():
             print("Session.permanent: ", session.permanent, "\n")
             return redirect(url_for('home'))
         
-    flash('Invalid username/password combination.')
+    flash('Invalid username/password.', 'warning')
     return redirect(url_for('login'))
 
 if __name__ == "__main__":

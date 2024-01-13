@@ -36,14 +36,21 @@
                         
                         <input type="hidden" class="hide" name="token" id="token" value=""> 
                       </form>
-      
-                      {% with messages = get_flashed_messages() %}
+                      {% with messages = get_flashed_messages(with_categories=true) %}
                       {% if messages %}
-                        <div class="alert alert-warning">
-                          <span><i class="fa-solid fa-circle-info"></i>&nbsp;{{ messages[0] }}</span>
-                        </div>
+                        {% for category, message in messages %}
+                          {% if category == 'success' %}
+                          <div class="alert alert-{{ category }}" role="alert">
+                            <span><i class="fa-solid fa-circle-check"></i>&nbsp;{{ message }}</span>
+                          </div>
+                          {% elif category == 'warning' %}
+                          <div class="alert alert-{{ category }}" role="alert">
+                              <span><i class="fa-solid fa-triangle-exclamation"></i>&nbsp;{{ message }}</span>
+                            </div>
+                          {% endif %}
+                        {% endfor %}
                       {% endif %}
-                    {% endwith %}
+                    {% endwith %}    
                     </div>
                   </div>
                 </div>
