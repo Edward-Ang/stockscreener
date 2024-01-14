@@ -41,6 +41,8 @@ header{
 
 .headerLogo img{
   margin-right: 8px;
+  width: 39px;
+  height: 39px;
 }
 
 .headerbar a{
