@@ -6,10 +6,11 @@ from itsdangerous import URLSafeTimedSerializer
 from flask_mail import Mail, Message
 from dotenv import load_dotenv
 from threading import Thread
-import os, re, secrets, smtplib
+import os, re, smtplib
 
 load_dotenv('config.env')
 
+# Settings
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY') or 'fallback_secret_key'
 salt = 'my_random_salt' #secrets.token_hex(16)  #Generating a 16-byte salt using secrets module
@@ -18,15 +19,14 @@ mongo_client = MongoClient('mongodb://localhost:27017/')
 host_info = mongo_client['HOST']
 print ("Mongo host info:", host_info)
 
+# Mail server settings
 app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = os.getenv('SMTP_USERNAME')
 app.config['MAIL_PASSWORD'] = os.getenv('SMTP_PASSWORD')
 
-print("Mail Server: ", app.config['MAIL_SERVER'])
-print("Mail Username: ", app.config['MAIL_USERNAME'])
-
+# Test mail server connection
 try:
     server = smtplib.SMTP(app.config['MAIL_SERVER'], app.config['MAIL_PORT'])
     server.starttls()
@@ -38,12 +38,13 @@ except Exception as e:
 
 mail = Mail(app)
 
-def send_email(app, msg):
+def send_email(app, msg): # Send email
     with app.app_context():
         mail.send(msg)
 
-@app.route('/reset_password', methods=['GET', 'POST'])
+@app.route('/reset_password', methods=['GET', 'POST']) # Reset password route
 def reset_request(): 
+    print("-----Reset Password------")
     db = mongo_client['FInvest']
     collection = db['users']
     email = request.form['email']
@@ -61,13 +62,13 @@ def reset_request():
         flash("Account doest not exist.", "warning")
         return redirect(url_for('reset'))
 
-@app.route('/reset_password/<token>', methods=['GET', 'POST'])
+@app.route('/reset_password/<token>', methods=['GET', 'POST']) # Reset password link route
 def reset_token(token):
     db = mongo_client['FInvest']
     collection = db['users']
     try:
         email = serializer.loads(token, salt=salt, max_age=3600)
-        print(email)
+        print(email, " Entered the reset link.")
     except:
         flash("Link expired. Please get new reset link.", "warning")
         return redirect(url_for('reset'))
@@ -77,11 +78,12 @@ def reset_token(token):
         hashpass = generate_password_hash(password, method='scrypt')
         collection.update_one({'name': email}, {'$set': {'password': hashpass}})
         flash("Password reset sucessfully!", "success")
+        print("-----Reset password sucessfully!------")
         return redirect(url_for('login'))
 
     return render_template('reset_token.html', title='Reset Password', token=token)
 
-def get_user_id(username):
+def get_user_id(username): # Get user _id from database
     db = mongo_client['FInvest']
     collection = db['users']
     user_document = collection.find_one({"name": username})
@@ -92,7 +94,7 @@ def get_user_id(username):
     else:
         return "User not exist"
 
-def is_valid_email(email):
+def is_valid_email(email): # Check valid email
     # Regular expression for basic email validation
     pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
     
@@ -102,7 +104,7 @@ def is_valid_email(email):
     else:
         return False
 
-@app.route('/')
+@app.route('/') # App first route
 def index():
     if 'username' in session:
         print('Current user: ' + session['username'] + "\n")
@@ -110,41 +112,42 @@ def index():
         print('No user is currently logged in.\n')
     return render_template('index.html')
 
-@app.route('/home')
+@app.route('/home') # Home page route
 def home():
     if 'username' in session:
         print('Current user: ' + session['username'] + "\n")
         return render_template('index.html')
     else:
+        print('No user is currently logged in.\n')
         return redirect(url_for('login'))
 
-@app.route('/watchlist')
+@app.route('/watchlist') # Watchlist page route
 def watchlist():
     return render_template('watchlist.html')
 
-@app.route('/signup')
+@app.route('/signup') # Signup page route
 def signup():
     return render_template('signup.html')
 
-@app.route('/login')
+@app.route('/login') # Login page route
 def login():
     return render_template('login.html')
 
-@app.route('/logout')
+@app.route('/logout') # Logout route
 def logout():
     print("User[ ", session['username'], " ] is logged out.")
     session.pop('username', None)
     return redirect(url_for('login'))
 
-@app.route('/view')
+@app.route('/view') # View screen page route
 def view():
     return render_template('screen.html')
 
-@app.route('/reset')
+@app.route('/reset') # Reset password page route
 def reset():
     return render_template('reset.html')
 
-@app.route('/get_main', methods=['GET'])
+@app.route('/get_main', methods=['GET']) # Get main table based on user in session
 def get_main():
     username = session.get('username', None)
     user_id = get_user_id(username)
@@ -159,7 +162,7 @@ def get_main():
         documents = list(collection.find({}, {"_id": 0}))
         return jsonify(documents)
     
-@app.route('/rename_watchlist', methods=['POST'])
+@app.route('/rename_watchlist', methods=['POST']) # Rename watchlist
 def rename_watchlist():
     print("-----Rename Watchlist-----")
     data = request.get_json()
@@ -182,7 +185,7 @@ def rename_watchlist():
         else:
             return "error: new watchlist name"
 
-@app.route('/update_fav', methods=['POST'])
+@app.route('/update_fav', methods=['POST']) # Toggle favourite bookmark
 def update_fav():
     print("-----Bookmark-----\n")
     username = session.get('username', None)
@@ -205,14 +208,14 @@ def update_fav():
             print('status is None\n')
         return redirect(url_for('index'))
 
-@app.route('/screen', methods=['POST'])
+@app.route('/screen', methods=['POST']) # View the selected watchlist
 def screen():
     data = request.get_json()
     scrnName = data.get('scrnName')
     session['scrnName'] = scrnName
     return redirect(url_for('view'))
 
-@app.route('/get_screen', methods=['GET'])
+@app.route('/get_screen', methods=['GET']) # Render the selected watchlist screen
 def get_screen():
     curUser = session['username']
     user_id = get_user_id(curUser)
@@ -225,13 +228,13 @@ def get_screen():
     documents = list(collection.find({}, {"_id": 0}))
     return jsonify(documents)
 
-@app.route('/get_screen_name', methods=['GET'])
+@app.route('/get_screen_name', methods=['GET']) # Get the current user and screen in session
 def get_screen_name():
     curUser = session.get('username', None)
     curScreen = session.get('scrnName', None)
     return jsonify({'screen': curScreen, 'user': curUser})
 
-@app.route('/get_session', methods=['GET'])
+@app.route('/get_session', methods=['GET']) # Get current user in session
 def get_session():
     username = session.get('username', None)
     if username is None:
@@ -239,7 +242,7 @@ def get_session():
 
     return jsonify({'username': username})
 
-@app.route('/insert_data', methods=['POST'])
+@app.route('/insert_data', methods=['POST']) # Save watchlist
 def insert_data():
     print("-----Save Watchlist-----\n")
     curUser = session['username']
@@ -262,7 +265,7 @@ def insert_data():
         })
     return redirect(url_for('index'))
 
-@app.route('/get_watchlist_name', methods=['GET'])
+@app.route('/get_watchlist_name', methods=['GET']) # Get watchlist name
 def get_collection_name():
     curUser = session['username']
     user_id = get_user_id(curUser)
@@ -272,7 +275,7 @@ def get_collection_name():
     values = [item['Name'] for item in data]
     return jsonify(values)  # Convert the list to JSON to return it.
 
-@app.route('/get_watchlist', methods=['GET'])
+@app.route('/get_watchlist', methods=['GET']) # Get watchlist details
 def get_collection_data():
     curUser = session['username']
     user_id = get_user_id(curUser)
@@ -281,7 +284,7 @@ def get_collection_data():
     data = list(collection.find({}, {'Name': 1, 'Date': 1, 'Time' :1, '_id': 0}))
     return jsonify(data)  # Convert the list to JSON to return it.
 
-@app.route('/delete_watchlist', methods=['POST'])
+@app.route('/delete_watchlist', methods=['POST']) # Delete watchlist
 def delete_watchlist():
      print("-----Delete Watchlist-----\n")
      curUser = session['username']
@@ -292,14 +295,14 @@ def delete_watchlist():
      watchlist_name = data.get("watchlist_name")
      
      collection = db[watchlist_name]
-     collection.drop()
+     collection.drop() #delete
 
      watchlist = db['Watchlist']
      watchlist.delete_one({'Name': watchlist_name})
 
      return redirect(url_for('watchlist'))
 
-@app.route('/register', methods=['POST'])
+@app.route('/register', methods=['POST']) # Register account
 def register():
     print("-----Registration-----")
     db = mongo_client['FInvest']
@@ -330,7 +333,7 @@ def register():
             flash('Username is used.', 'warning')
             return render_template('signup.html')
 
-@app.route('/signin', methods=['POST'])
+@app.route('/signin', methods=['POST']) # Login account
 def signin():
     print("-----Log In------")
     db = mongo_client.FInvest
