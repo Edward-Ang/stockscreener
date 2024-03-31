@@ -396,6 +396,7 @@ th:hover {
 
 .stockLogo img{
   width: 39px;
+  height: 39px;
   border-radius: 50%;
   background-color: var(--white);
 }

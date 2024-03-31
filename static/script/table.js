@@ -57,12 +57,13 @@ getMain().then(data => {
         stockTicker.className = 'stockTicker';
         stockName.className = 'stockName';
         var imageUrl = "https://raw.githubusercontent.com/Edward-Ang/StockLogos/main/" +  data[i].Stock + ".svg";
+        var imgurl = "{{url_for('static', filename='images/bg1.png')}";
 
         // Check if the image is not already cached (**cache method**)
         if (!cachedImages[imageUrl]) {
             // Preload the image
             const img = new Image();
-            img.src = imageUrl;
+            img.src = imgurl;
 
             // Store the image in the cache
             cachedImages[imageUrl] = img;
