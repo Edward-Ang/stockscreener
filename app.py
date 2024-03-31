@@ -1,12 +1,12 @@
 from flask import Flask, render_template, request, jsonify, redirect, url_for, session, flash
 from pymongo import MongoClient
-from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import timedelta
 from itsdangerous import URLSafeTimedSerializer
 from flask_mail import Mail, Message
 from dotenv import load_dotenv
 from threading import Thread
 import os, re, smtplib
+import bcrypt
 
 load_dotenv('config.env')
 
@@ -75,7 +75,7 @@ def reset_token(token):
 
     if request.method == 'POST':
         password = request.form['password']
-        hashpass = generate_password_hash(password, method='scrypt')
+        hashpass = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         collection.update_one({'name': email}, {'$set': {'password': hashpass}})
         flash("Password reset sucessfully!", "success")
         print("-----Reset password sucessfully!------")
@@ -318,7 +318,8 @@ def register():
         existing_user = users.find_one({"name": user_name})
 
         if existing_user is None:
-            hashpass = generate_password_hash(pass_word, method='scrypt')
+            hashpass = bcrypt.hashpw(pass_word.encode('utf-8'), bcrypt.gensalt())
+            #hashpass = generate_password_hash(pass_word, method='scrypt')
             inserted_user = users.insert_one({'name': user_name, 'password': hashpass})
             userid = str(inserted_user.inserted_id)
 
@@ -344,7 +345,9 @@ def signin():
     login_user = users.find_one({'name': user_name})
 
     if login_user:
-        if check_password_hash(login_user['password'], pass_word):
+        hashed_password = login_user.get('password')  # Get hashed password from database
+        if bcrypt.checkpw(pass_word.encode('utf-8'), hashed_password):  
+        #if check_password_hash(login_user['password'], pass_word):
             session.permanent = remember_me
             if session.permanent is True:
                 app.permanent_session_lifetime = timedelta(minutes=30)
