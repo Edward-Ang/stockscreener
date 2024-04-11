@@ -206,7 +206,7 @@ def update_fav():
                 collection.update_one({"Stock": ticker},{"$set":{"Book": 1}})
         else:
             print('status is None\n')
-        return redirect(url_for('index'))
+        return "Toggle successfully"
 
 @app.route('/screen', methods=['POST']) # View the selected watchlist
 def screen():
