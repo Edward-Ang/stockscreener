@@ -11,72 +11,72 @@ var EMASlider = document.querySelector("#kt_slider_basic_EMA");
 var RSISlider = document.querySelector("#kt_slider_basic_RSI");
 
 noUiSlider.create(openSlider, {
-    start: [1, 555],
+    start: [0, 150],
     connect: true,
-    step: 2.11,
+    step: 0.02,
     range: {
         "min": 0,
-        "max": 555
+        "max": 150
     }
 });
 
 noUiSlider.create(highSlider, {
-    start: [1, 599],
+    start: [0, 150],
     connect: true,
-    step: 2,
+    step: 0.02,
     range: {
         "min": 0,
-        "max": 600
+        "max": 150
     }
 });
 
 noUiSlider.create(lowSlider, {
-    start: [1, 599],
+    start: [0, 150],
     connect: true,
-    step: 2,
+    step: 0.02,
     range: {
         "min": 0,
-        "max": 600
+        "max": 150
     }
 });
 
 noUiSlider.create(closeSlider, {
-    start: [1, 599],
+    start: [0, 150],
     connect: true,
-    step: 2,
+    step: 0.02,
     range: {
         "min": 0,
-        "max": 600
+        "max": 150
     }
 });
 
 noUiSlider.create(MASlider, {
-    start: [1, 599],
+    start: [0, 150],
     connect: true,
-    step: 2,
+    step: 0.02,
     range: {
         "min": 0,
-        "max": 600
+        "max": 150
     }
 });
 
 noUiSlider.create(EMASlider, {
-    start: [1, 599],
+    start: [0, 150],
     connect: true,
-    step: 2,
+    step: 0.02,
     range: {
         "min": 0,
-        "max": 600
+        "max": 150
     }
 });
 
 noUiSlider.create(RSISlider, {
-    start: [1, 599],
+    start: [0, 100],
     connect: true,
-    step: 2,
+    step: 0.02,
     range: {
         "min": 0,
-        "max": 600
+        "max": 100
     }
 });
 
