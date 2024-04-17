@@ -199,6 +199,18 @@ form {
   opacity: 0;
 }
 
+.form-control:-webkit-autofill,
+.form-control:-webkit-autofill:hover,
+.form-control:-webkit-autofill:focus,
+.form-control:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px #191a1f inset !important;
+    caret-color: white;
+}
+
+.form-control:-webkit-autofill {
+  -webkit-text-fill-color: #fbfdf7 !important;
+}
+
 .control__indicator {
   position: absolute;
   top: 2px;

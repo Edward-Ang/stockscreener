@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for, session, flash
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session, flash, make_response
 from pymongo import MongoClient
 from datetime import timedelta
 from itsdangerous import URLSafeTimedSerializer
@@ -106,15 +106,23 @@ def is_valid_email(email): # Check valid email
 
 @app.route('/') # App first route
 def index():
-    if 'username' in session:
-        print('Current user: ' + session['username'] + "\n")
+    if 'username' in request.cookies:
+        username_from_cookie = request.cookies.get('username')
+        print('User from cookie: ', username_from_cookie, "\n")
+        session['username'] = username_from_cookie
+        return render_template('index.html')
     else:
         print('No user is currently logged in.\n')
-    return render_template('index.html')
+        return render_template('login.html')
 
 @app.route('/home') # Home page route
 def home():
-    if 'username' in session:
+    if 'username' in request.cookies:
+        username_from_cookie = request.cookies.get('username')
+        print('User from cookie: ', username_from_cookie, "\n")
+        session['username'] = username_from_cookie
+        return render_template('index.html')
+    elif 'username' in session:
         print('Current user: ' + session['username'] + "\n")
         return render_template('index.html')
     else:
@@ -347,14 +355,15 @@ def signin():
     if login_user:
         hashed_password = login_user.get('password')  # Get hashed password from database
         if bcrypt.checkpw(pass_word.encode('utf-8'), hashed_password):  
-        #if check_password_hash(login_user['password'], pass_word):
-            session.permanent = remember_me
-            if session.permanent is True:
-                app.permanent_session_lifetime = timedelta(minutes=30)
-
             session['username'] = user_name
             print("User logged in: ", session['username'])
-            print("Session.permanent: ", session.permanent, "\n")
+            if remember_me:
+                # Create a response object to set a cookie
+                response = make_response(redirect(url_for('home')))
+                # Set a cookie to remember the user for 30 minutes
+                response.set_cookie('username', user_name, max_age=2592000)
+                return response
+            
             return redirect(url_for('home'))
         
     flash('Invalid username/password.', 'warning')
