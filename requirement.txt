@@ -1,0 +1,6 @@
+flask
+pymongo
+itsdangerous
+flask-mail
+python-dotenv
+bcrypt
